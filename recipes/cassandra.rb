@@ -54,7 +54,7 @@ mount "/srv/cassandra/commitlog" do
 end
 
 aws_ebs_raid 'data_log_volume_raid' do
-  mount_point '/srv/cassandra/datafile'
+  mount_point '/srv/cassandra/data'
   disk_count 2
   disk_size 500
   disk_type "io1"
