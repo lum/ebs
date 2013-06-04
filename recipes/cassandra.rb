@@ -42,12 +42,12 @@ end
 execute "create-file-system" do
   user "root"
   group "root"
-  command "mkfs.xfs /dev/xvdc"
+  command "mkfs.xfs /dev/xvdd"
   not_if 'mount -l | grep /srv/cassandra/commitlog'  # NB we grep for the mount-point *not* the device name b/c it'll show as /dev/xvdc or similar not the "role" name mount
 end
 
 mount "/srv/cassandra/commitlog" do
-  device '/dev/cassandra/commitlog'
+  device '/dev/xvdd'
   fstype 'xfs'
   options "noatime,nobootwait"
   action [:mount, :enable]
