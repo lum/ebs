@@ -25,16 +25,10 @@ aws_ebs_volume "ebs_commit_drive" do
 	aws_access_key          aws_creds['aws_access_key_id']
 	aws_secret_access_key   aws_creds['aws_secret_access_key']
 	size  100  # in GB
-	device "/dev/xvdc"
+	device "/dev/xvdd"
 	piops 500  # i/o operations per second
 	volume_type "io1"
 	action [ :create, :attach ]
-end
-
-# naming based on role/recipe to avoid collisions over names like /dev/xvdc when roles are piles on boxes
-link "/dev/cassandra/commitlog" do
-  to "/dev/xvdc"
-  link_type :symbolic
 end
 
 directory "/srv/cassandra/commitlog" do
@@ -48,7 +42,7 @@ end
 execute "create-file-system" do
   user "root"
   group "root"
-  command "mkfs.xfs /dev/cassandra/commitlog"
+  command "mkfs.xfs /dev/xvdc"
   not_if 'mount -l | grep /srv/cassandra/commitlog'  # NB we grep for the mount-point *not* the device name b/c it'll show as /dev/xvdc or similar not the "role" name mount
 end
 
