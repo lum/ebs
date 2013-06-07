@@ -17,6 +17,15 @@
 # limitations under the License.
 # 
 
+case node[:platform]
+when 'debian','ubuntu'
+  package 'xfsdump'
+  package 'xfsprogs'
+  package 'xfslibs-dev'
+when 'redhat','centos','fedora','amazon'
+  package 'xfsprogs-devel'
+end
+
 include_recipe 'aws'
 
 aws_creds = data_bag_item("aws", "main")
@@ -60,6 +69,19 @@ aws_ebs_raid 'data_log_volume_raid' do
   disk_type "io1"
   disk_piops 1000
   level 0
-  filesystem 'ext4'
+  filesystem 'xfs'
   action :auto_attach
 end
+
+template 'mdadm configuration' do
+  path value_for_platform(
+    ['centos','redhat','fedora','amazon'] => {'default' => '/etc/mdadm.conf'},
+    'default' => '/etc/mdadm/mdadm.conf'
+  )
+  source 'mdadm.conf.erb'
+  mode 0644
+  owner 'root'
+  group 'root'
+end
+
+
