@@ -84,4 +84,10 @@ template 'mdadm configuration' do
   group 'root'
 end
 
+mount "/srv/cassandra/data" do
+  device '/dev/md0'
+  fstype 'xfs'
+  options "noatime,nobootwait"
+  action [:mount, :enable]
+end
 
