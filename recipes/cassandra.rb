@@ -82,6 +82,7 @@ template 'mdadm configuration' do
   mode 0644
   owner 'root'
   group 'root'
+  notifies :run, "execute[update_initramfs]"
 end
 
 mount "/srv/cassandra/data" do
@@ -89,5 +90,12 @@ mount "/srv/cassandra/data" do
   fstype 'xfs'
   options "noatime,nobootwait"
   action [:mount, :enable]
+  notifies :run, "execute[update_initramfs]"
+end
+
+execute "update_initramfs" do
+  user "root"
+  command "/usr/sbin/update-initramfs -u"
+  action :nothing
 end
 
