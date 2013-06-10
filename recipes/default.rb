@@ -20,3 +20,8 @@
 include_recipe 'aws'
 
 aws_creds = data_bag_item("aws", "main")
+
+if node.attribute?("ec2")
+	include_recipe 'ebs::cassandra'
+	include_recipe 'ebs::elasticsearch'
+end
