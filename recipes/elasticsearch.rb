@@ -33,9 +33,9 @@ aws_creds = data_bag_item("aws", "main")
 aws_ebs_raid 'data_log_volume_raid' do
   mount_point '/srv/elasticsearch'
   disk_count 2
-  disk_size 200
+  disk_size node['aws']['ebs']['data_log']['disk_size']
   disk_type "io1"
-  disk_piops 500
+  disk_piops node['aws']['ebs']['data_log']['piops']
   level 0
   filesystem 'xfs'
   action :auto_attach

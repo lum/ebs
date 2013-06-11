@@ -33,9 +33,9 @@ aws_creds = data_bag_item("aws", "main")
 aws_ebs_volume "ebs_commit_drive" do
 	aws_access_key          aws_creds['aws_access_key_id']
 	aws_secret_access_key   aws_creds['aws_secret_access_key']
-	size  100  # in GB
+	size  node['aws']['ebs']['commit_log']['disk_size']  # in GB
 	device "/dev/xvdd"
-	piops 500  # i/o operations per second
+	piops node['aws']['ebs']['commit_log']['piops']  # i/o operations per second
 	volume_type "io1"
 	action [ :create, :attach ]
 end
@@ -65,9 +65,9 @@ end
 aws_ebs_raid 'data_log_volume_raid' do
   mount_point '/srv/cassandra/data'
   disk_count 2
-  disk_size 500
+  disk_size node['aws']['ebs']['data_log']['disk_size']
   disk_type "io1"
-  disk_piops 1000
+  disk_piops node['aws']['ebs']['data_log']['piops']
   level 0
   filesystem 'xfs'
   action :auto_attach
