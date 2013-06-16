@@ -34,8 +34,7 @@ aws_ebs_raid 'data_log_volume_raid' do
   mount_point '/srv/zookeeper'
   disk_count 2
   disk_size node['aws']['ebs']['data_log']['disk_size']
-  disk_type "io1"
-  disk_piops node['aws']['ebs']['data_log']['piops']
+  disk_type "standard"
   level 0
   filesystem 'xfs'
   action :auto_attach
