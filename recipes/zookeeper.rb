@@ -30,38 +30,34 @@ include_recipe 'aws'
 
 aws_creds = data_bag_item("aws", "main")
 
-aws_ebs_raid 'data_log_volume_raid' do
-  mount_point '/srv/zookeeper'
-  disk_count 2
-  disk_size node['aws']['ebs']['data_log']['disk_size']
-  disk_type "standard"
-  level 0
-  filesystem 'xfs'
-  action :auto_attach
+aws_ebs_volume "ebs_zookeeper_drive" do
+  aws_access_key          aws_creds['aws_access_key_id']
+  aws_secret_access_key   aws_creds['aws_secret_access_key']
+  size  node['aws']['ebs']['data_log']['disk_size']  # in GB
+  device "/dev/xvdd"
+  piops node['aws']['ebs']['data_log']['piops']  # i/o operations per second
+  volume_type "io1"
+  action [ :create, :attach ]
 end
 
-template 'mdadm configuration' do
-  path value_for_platform(
-    ['centos','redhat','fedora','amazon'] => {'default' => '/etc/mdadm.conf'},
-    'default' => '/etc/mdadm/mdadm.conf'
-  )
-  source 'mdadm.conf.erb'
-  mode 0644
-  owner 'root'
+directory "/srv/zookeeper" do
+  user 'root'
   group 'root'
-  notifies :run, "execute[update_initramfs]"
+  mode 00755
+  recursive true
+  action :create
+end
+
+execute "create-file-system" do
+  user "root"
+  group "root"
+  command "mkfs.xfs /dev/xvdd"
+  not_if 'mount -l | grep /srv/zookeeper'  # NB we grep for the mount-point *not* the device name b/c it'll show as /dev/xvdc or similar not the "role" name mount
 end
 
 mount "/srv/zookeeper" do
-  device '/dev/md0'
+  device '/dev/xvdd'
   fstype 'xfs'
   options "noatime,nobootwait"
   action [:mount, :enable]
-  notifies :run, "execute[update_initramfs]"
-end
-
-execute "update_initramfs" do
-  user "root"
-  command "/usr/sbin/update-initramfs -u"
-  action :nothing
 end
