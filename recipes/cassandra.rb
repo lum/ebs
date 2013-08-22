@@ -64,7 +64,7 @@ end
 
 aws_ebs_raid 'data_log_volume_raid' do
   mount_point '/srv/cassandra/data'
-  disk_count 2
+  disk_count node['aws']['ebs']['data_log']['disk_count']
   disk_size node['aws']['ebs']['data_log']['disk_size']
   disk_type "io1"
   disk_piops node['aws']['ebs']['data_log']['piops']
