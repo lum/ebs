@@ -18,7 +18,7 @@ include_recipe 'aws'
 
 aws_creds = data_bag_item("aws", "main")
 
-formatted_nodename = #{nodename}.gsub('.', '_')
+formatted_nodename = node['restored_nodename']
 ebs_snap_ids = data_bag_item("snapshots", "#{formatted_nodename}")
 
 aws_ebs_volume "ebs_commit_drive" do
@@ -53,4 +53,30 @@ aws_ebs_raid 'data_log_volume_raid' do
   filesystem 'xfs'
   snapshots data_vol_snapshots
   action :auto_attach
+end
+
+template 'mdadm configuration' do
+  path value_for_platform(
+    ['centos','redhat','fedora','amazon'] => {'default' => '/etc/mdadm.conf'},
+    'default' => '/etc/mdadm/mdadm.conf'
+  )
+  source 'mdadm.conf.erb'
+  mode 0644
+  owner 'root'
+  group 'root'
+  notifies :run, "execute[update_initramfs]"
+end
+
+mount "/srv/cassandra/data" do
+  device '/dev/md0'
+  fstype 'xfs'
+  options "noatime,nobootwait"
+  action [:mount, :enable]
+  notifies :run, "execute[update_initramfs]"
+end
+
+execute "update_initramfs" do
+  user "root"
+  command "/usr/sbin/update-initramfs -u"
+  action :nothing
 end

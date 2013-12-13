@@ -4,6 +4,6 @@ maintainer_email 'steve@tempo.ai'
 license          'All rights reserved'
 description      'Installs/Configures ebs'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '0.1.16'
+version          '0.2.0'
 
 depends "aws"
