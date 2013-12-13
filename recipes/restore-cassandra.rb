@@ -32,6 +32,14 @@ aws_ebs_volume "ebs_commit_drive" do
 	action [ :create, :attach ]
 end
 
+directory "/srv/cassandra/commitlog" do
+  user 'root'
+  group 'root'
+  mode 00755
+  recursive true
+  action :create
+end
+
 mount "/srv/cassandra/commitlog" do
   device '/dev/xvdd'
   fstype 'xfs'
