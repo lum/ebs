@@ -61,7 +61,7 @@ aws_ebs_raid 'data_log_volume_raid' do
   disk_piops node['aws']['ebs']['data_log']['piops']
   level 0
   filesystem 'xfs'
-  snapshots data_vol_snapshots
+  snapshots ebs_snap_ids['data_volume1']['data_volume1_snapshot_id'], ebs_snap_ids['data_volume2']['data_volume2_snapshot_id']
   action :auto_attach
 end
 
