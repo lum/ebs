@@ -41,4 +41,4 @@ aws_ebs_raid 'data_log_volume_raid' do
   level 0
   filesystem 'xfs'
   action :auto_attach
-endß
+end
