@@ -28,7 +28,7 @@ end
 
 include_recipe 'aws'
 
-aws_creds = data_bag_item("aws", "main")
+creds = data_bag_item("aws", "main")
 
 aws_ebs_raid 'data_log_volume_raid' do
   mount_point '/srv/elasticsearch'
