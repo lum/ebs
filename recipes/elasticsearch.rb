@@ -41,30 +41,4 @@ aws_ebs_raid 'data_log_volume_raid' do
   level 0
   filesystem 'xfs'
   action :auto_attach
-end
-
-template 'mdadm configuration' do
-  path value_for_platform(
-    ['centos','redhat','fedora','amazon'] => {'default' => '/etc/mdadm.conf'},
-    'default' => '/etc/mdadm/mdadm.conf'
-  )
-  source 'mdadm.conf.erb'
-  mode 0644
-  owner 'root'
-  group 'root'
-  notifies :run, "execute[update_initramfs]"
-end
-
-mount "/srv/elasticsearch" do
-  device '/dev/md0'
-  fstype 'xfs'
-  options "noatime,nobootwait"
-  action [:mount, :enable]
-  notifies :run, "execute[update_initramfs]"
-end
-
-execute "update_initramfs" do
-  user "root"
-  command "/usr/sbin/update-initramfs -u"
-  action :nothing
-end
+endß
