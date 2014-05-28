@@ -54,6 +54,8 @@ data_vol_snapshots << ebs_snap_ids['data_volume2']['data_volume2_snapshot_id']
 Chef::Log.info("LIST OF SNAPSHOT IDs #{data_vol_snapshots}")
 
 aws_ebs_raid 'data_log_volume_raid' do
+  aws_access_key          aws_creds['aws_access_key_id']
+  aws_secret_access_key   aws_creds['aws_secret_access_key']
   mount_point '/srv/cassandra/data'
   disk_count node['aws']['ebs']['data_log']['disk_count']
   disk_size node['aws']['ebs']['data_log']['disk_size']
