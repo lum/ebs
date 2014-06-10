@@ -51,7 +51,7 @@ end
 execute "create-file-system" do
   user "root"
   group "root"
-  command "mkfs.xfs /dev/xvdd"
+  command "mkfs.xfs -f /dev/xvdd"
   not_if 'mount -l | grep /srv/zookeeper'  # NB we grep for the mount-point *not* the device name b/c it'll show as /dev/xvdc or similar not the "role" name mount
 end
 
