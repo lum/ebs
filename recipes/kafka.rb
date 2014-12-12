@@ -31,6 +31,8 @@ include_recipe 'aws'
 aws_creds = data_bag_item("aws", "main")
 
 aws_ebs_raid 'trans_log_volume_raid' do
+  aws_access_key          aws_creds['aws_access_key_id']
+  aws_secret_access_key   aws_creds['aws_secret_access_key']
   mount_point '/srv/kafka'
   disk_count 2
   disk_size node['aws']['ebs']['trans_log']['disk_size']
