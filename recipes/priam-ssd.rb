@@ -26,9 +26,9 @@ when 'redhat','centos','fedora','amazon'
   package 'xfsprogs-devel'
 end
 
-directory "/srv/cassandra" do 
-	user 'root'
-	group 'root'
+directory "/srv/cassandra/data" do 
+	user 'cassandra'
+	group 'tomcat7'
 	mode 00755
 	action :create
 end
@@ -40,7 +40,7 @@ execute "create-file-system" do
   not_if 'mount -l | grep /srv/cassandra'  # NB we grep for the mount-point *not* the device name b/c it'll show as /dev/xvdc or similar not the "role" name mount
 end
 
-mount "/srv/cassandra" do
+mount "/srv/cassandra/data" do
   device '/dev/xvdb'
   fstype 'xfs'
   options "noatime,nobootwait"
