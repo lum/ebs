@@ -30,6 +30,7 @@ directory "/srv/cassandra/data" do
 	user 'cassandra'
 	group 'tomcat7'
 	mode 00755
+	recursive true
 	action :create
 end
 
