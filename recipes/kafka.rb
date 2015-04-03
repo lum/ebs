@@ -40,6 +40,7 @@ aws_ebs_raid 'trans_log_volume_raid' do
   disk_piops node['aws']['ebs']['trans_log']['piops']
   level 0
   filesystem 'xfs'
+  hvm_device_names true 
   action :auto_attach
 end
 
